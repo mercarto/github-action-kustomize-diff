@@ -16,7 +16,7 @@ function build {
   for envpath in $(get_targets); do
     local build_dir
     if ! [ -d "$envpath" ]; then continue; fi
-    build_dir="$TMP_DIR/$ref/$(basename "$envpath")"
+    build_dir="$TMP_DIR/$ref/${envpath#*kustomize/}"
     printf "\n\nCreating build directory: %s\n" "$build_dir"
     mkdir -p "$build_dir"
     echo "Running kustomize"
