@@ -25,15 +25,26 @@ function build {
 }
 
 function main {
-  local diff escaped_output output
+  local diff escaped_output output is_empty
   build "$INPUT_HEAD_REF"
   build "$INPUT_BASE_REF"
   set +e
   diff=$(git diff --no-index "$TMP_DIR/$INPUT_BASE_REF" "$TMP_DIR/$INPUT_HEAD_REF")
   set -e
+  
+  if [[ -z "$diff" ]]; then
+    is_empty=true
+  else
+    is_empty=false
+  fi
+
   output=$(printf "\`\`\` diff\n%s\n\`\`\`\n" "$diff")
   escaped_output=${output//$'\n'/'%0A'}
+  
   echo "::set-output name=diff::$escaped_output"
+  echo "::set-output name=is_empty::$is_empty"
+
+  printf "\n\Is Empty: %s\n" "$is_empty"
   printf "\n\nOutput: %s\n" "$escaped_output"
 }
 
